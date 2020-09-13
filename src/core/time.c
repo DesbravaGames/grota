@@ -5,6 +5,7 @@ long initial_time=0;
 long last_update_time=0;
 float delta=0;
 
+float delta_average=0;
 /**
  * Returns the current time in microseconds using posix function,
  */
@@ -22,6 +23,9 @@ void time_init() {
 float time_elapsed() {
 	return (float) (getSysMicrotime()-initial_time)/1e6f;
 };
+float time_elapsed_since(float time_point) {
+	return time_elapsed()-time_point;
+}
 
 long time_elapsed_millis() {
 	return (getSysMicrotime()-initial_time)/1000;
@@ -30,6 +34,9 @@ long time_elapsed_micro(){
 	return getSysMicrotime()-initial_time;
 };
 
+float time_average_delta() {
+	return delta_average;
+}
 float time_delta() {
 	return delta;
 }
@@ -38,9 +45,16 @@ void time_update(){
 
 	delta=(float)((now_micro-last_update_time)/1e6f);
 	last_update_time=now_micro;
+	
+	if(delta_average==0) {
+		delta_average=delta;
+	} else {
+		// linear interpolation
+		delta_average=delta_average + 0.01 * (delta - delta_average);
+	}
 };
 
 int time_fps() {
-	return (int)(1.0/delta);
+	return (int)(1.0/delta_average);
 };
 

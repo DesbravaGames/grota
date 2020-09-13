@@ -1,21 +1,32 @@
 #ifndef GROTA_MATH_H
 #define GROTA_MATH_H
 
+#include <libs/opengl.h>
+
 #define VEC2_ZERO {0.0f, 0.0f}
 #define VEC2_FILL_ONE {1.0f, 1.0f}
 /* two dimensional vector */
 typedef struct {
-    float x, y;
+    GLfloat x, y;
 } Vec2;
 
 Vec2 vec2_normalize(Vec2 vector);
-Vec2 vec2_create(float x,float y);
+Vec2 vec2_create(GLfloat x,GLfloat y);
 Vec2 vec2_add(Vec2 a,Vec2 b);
 Vec2 vec2_sub(Vec2 a, Vec2 b);
-float vec2_dot(Vec2 a, Vec2 b);
-Vec2 vec2_scalar_mult(Vec2 v,float s);
+GLfloat vec2_dot(Vec2 a, Vec2 b);
+Vec2 vec2_scalar_mult(Vec2 v,GLfloat s);
 Vec2 vec2_invert(Vec2 v);
 
+typedef struct {
+	Vec2 size;
+	Vec2 position;
+} Rect;
+
+static Rect rect_empty={
+	{1.0f,1.0f},
+	{0.0f,0.0f}
+};
 
 /* three dimensional vector */
 
@@ -23,39 +34,46 @@ Vec2 vec2_invert(Vec2 v);
 #define VEC3_FILL_ONE {1.0f, 1.0f,1.0f}
 
 typedef struct {
-    float x, y, z;
+    GLfloat x, y, z;
 } Vec3;
 
 Vec3 vec3_normalize(Vec3 vector);
-Vec3 vec3_create(float x,float y,float z);
+Vec3 vec3_create(GLfloat x,GLfloat y,GLfloat z);
 Vec3 vec3_add(Vec3 a,Vec3 b);
 Vec3 vec3_sub(Vec3 a, Vec3 b);
 Vec3 vec3_cross(Vec3 x,Vec3 y);
-float vec3_dot(Vec3 a, Vec3 b);
-Vec3 vec3_scalar_mult(Vec3 v,float s);
+GLfloat vec3_dot(Vec3 a, Vec3 b);
+Vec3 vec3_scalar_mult(Vec3 v,GLfloat s);
 Vec3 vec3_invert(Vec3 v);
+
+
 
 
 /*     MATRICES     */
 
-#define MAT_EMPTY_ROW { 0.0f, 0.0f, 0.0f, 0.0f }
-#define MAT_EMPTY { MAT_EMPTY_ROW, MAT_EMPTY_ROW, MAT_EMPTY_ROW, MAT_EMPTY_ROW}
+#define MAT4_EMPTY {0}
+#define MAT4_IDENTITY {1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1}
 
 /**
  * @brief represent a 4x4 matrix.
  *
  */
 typedef struct {
-    float data[4][4];
+    GLfloat data[4][4];
 } Mat4;
 
 
-
+static const Mat4 mat4_identity= {
+	1,0,0,0,
+	0,1,0,0,
+	0,0,1,0,
+	0,0,0,1
+};
 /**
  * @brief create a 4x4 matrix
  * @return Mat4
  */
-Mat4 mat4(float num);
+Mat4 mat4_create(GLfloat num);
 
 
 /**
@@ -71,7 +89,7 @@ Mat4 mat4(float num);
  * @param far Specifies the distance from the viewer to the far clipping
  *            plane (always positive).
  */
-Mat4 mat4_perspective(float fovy,float aspect,float zNear,float zFar);
+Mat4 mat4_perspective(GLfloat fovy,GLfloat aspect,GLfloat zNear,GLfloat zFar);
 
 /**
  * @brief Creates a matrix for an orthographic parallel viewing volume.
@@ -83,12 +101,12 @@ Mat4 mat4_perspective(float fovy,float aspect,float zNear,float zFar);
  * @param zFar
  */
 Mat4 mat4_ortho(
-        float left,
-        float right,
-        float bottom,
-        float top,
-        float zNear,
-        float zFar);
+        GLfloat left,
+        GLfloat right,
+        GLfloat bottom,
+        GLfloat top,
+        GLfloat zNear,
+        GLfloat zFar);
 
 /**
  * @brief Creates a frustum matrix.
@@ -100,12 +118,12 @@ Mat4 mat4_ortho(
  * @param far
  */
 Mat4 mat4_frustum(
-        float left,
-        float right,
-        float bottom,
-        float top,
-        float zNear,
-        float zFar);
+        GLfloat left,
+        GLfloat right,
+        GLfloat bottom,
+        GLfloat top,
+        GLfloat zNear,
+        GLfloat zFar);
 
 /**
  * @brief Build a look at view matrix based on the default handedness.
@@ -125,7 +143,7 @@ Mat4 mat4_look_at(
  * @brief multiply matrice by a scalar
  * 
  */
-void mat4_scalar_mult(Mat4 *m, float s);
+void mat4_scalar_mult(Mat4 *m, GLfloat s);
 
 
 /**
@@ -133,21 +151,46 @@ void mat4_scalar_mult(Mat4 *m, float s);
  * 
  */
 Mat4 mat4_mult(Mat4 m1, Mat4 m2);
-void mat4_rotation(Mat4 *matrix,float angle, float x, float y, float z);
-void mat4_rotationxyz(Mat4 *matrix,float angleX, float angleY, float angleZ);
+void mat4_rotation(Mat4 *matrix,GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
+void mat4_rotationxyz(Mat4 *matrix,GLfloat angleX, GLfloat angleY, GLfloat angleZ);
 void mat4_rotation_vec3(Mat4 *matrix,Vec3 angles);
-void mat4_rotate(Mat4 *matrix,float angle, float x, float y, float z);
-void mat4_rotatexyz(Mat4 *matrix,float angleX, float angleY, float angleZ);
+void mat4_rotate(Mat4 *matrix,GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
+void mat4_rotatexyz(Mat4 *matrix,GLfloat angleX, GLfloat angleY, GLfloat angleZ);
 void mat4_rotate_vec3(Mat4 *matrix,Vec3 angles);
-void mat4_translation(Mat4 *matrix,float x, float y, float z);
+void mat4_translation(Mat4 *matrix,GLfloat x, GLfloat y, GLfloat z);
 void mat4_translation_vec3(Mat4 *matrix,Vec3 translation);
-void mat4_translate(Mat4 *matrix,float x, float y, float z);
+void mat4_translate(Mat4 *matrix,GLfloat x, GLfloat y, GLfloat z);
 void mat4_translate_vec3(Mat4 *matrix,Vec3 translation);
-void mat4_scaling(Mat4 *matrix,float x, float y, float z);
+void mat4_scaling(Mat4 *matrix,GLfloat x, GLfloat y, GLfloat z);
 void mat4_scaling_vec3(Mat4 *matrix,Vec3 scale);
-void mat4_scale(Mat4 *matrix,float x, float y, float z);
-void mat4_scale_all(Mat4 *matrix,float v);
+void mat4_scale(Mat4 *matrix,GLfloat x, GLfloat y, GLfloat z);
+void mat4_scale_all(Mat4 *matrix,GLfloat v);
 void mat4_scale_vec3(Mat4 *matrix,Vec3 scale);
+
+/*   TRANSFORMATIONS  */
+
+typedef struct {
+	Vec3 position;
+	Vec3 angles;
+	Vec3 size;
+} Transform;
+
+#define TRANSFORM_EMPTY = {VEC3_ZERO, VEC3_ZERO,VEC3_FILL_ONE };
+#define TRANSFORM_ORIGIN = {VEC3_ZERO, VEC3_ZERO,VEC3_FILL_ONE };
+
+static Transform transform_identity= {
+	{0.0f,0.0f,0.0f}, //pos
+	{0.0f,0.0f,0.0f}, //euler
+	{1.0f,1.0f,1.0f} //size
+};
+void transform_to_matrix(Transform transform,Mat4 *matrix);
+
+/*
+ * view matrix is the relationship between world and camera
+ * then, is the inverse process of model matrix
+ *  */
+void transform_to_view_matrix(Transform transform,Mat4 *matrix);
+
 
 
 #endif
