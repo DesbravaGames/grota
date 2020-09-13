@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "window.h": "c",
+        "camera.h": "c",
+        "shaders.h": "c",
+        "opengl.h": "c"
+    }
+}
