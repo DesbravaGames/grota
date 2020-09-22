@@ -13,7 +13,7 @@ EventRegister register_alloc(int capacity);
 bool register_event(EventRegister *reg,int event);
 void register_reset(EventRegister *reg);
 bool register_has_event(EventRegister *reg,int event);
-
+ 
 void register_free(EventRegister *reg);
 
 bool array_contains(int* arr,unsigned int arr_size,int value);

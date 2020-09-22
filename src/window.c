@@ -3,20 +3,18 @@
 #include "core/colors.h"
 #include "core/time.h"
 #include "window.h"
-// stack size
-#include <sys/resource.h>
 #include <stdlib.h>
 #include <string.h>
 
 /*#ifdef __APPLE_
 		#include <GLUT/glut.h>
-	#else
-	#endif
-	*/
+#else
+#endif
+*/
 	///// INPUT
 
 
-#define MAX_EVENTS_KEYS 32
+#define MAX_EVENTS_KEYS 16
 
 int pressed_keys[MAX_EVENTS_KEYS];
 int pressed_keys_buffer[MAX_EVENTS_KEYS];
@@ -25,21 +23,30 @@ int pressing_keys[MAX_EVENTS_KEYS];
 int released_keys[MAX_EVENTS_KEYS];
 int released_keys_buffer[MAX_EVENTS_KEYS];
 
+static void register_specialdown(int key,int mouse_x,int mouse_y) {
+	array_add_once(pressed_keys_buffer,MAX_EVENTS_KEYS,key+255);
+	array_add_once(pressing_keys,MAX_EVENTS_KEYS,key+255);
+}
+static void register_specialup(int key,int mouse_x,int mouse_y) {
+	array_remove(pressing_keys,MAX_EVENTS_KEYS,key+255);
+	array_add_once(released_keys_buffer,MAX_EVENTS_KEYS,key+255);
+}
+
 static void register_keydown(unsigned char key,int mouse_x,int mouse_y) {
-	array_add(pressed_keys_buffer,MAX_EVENTS_KEYS,(int)key);
-	array_add(pressing_keys,MAX_EVENTS_KEYS,(int)key);
+	array_add_once(pressed_keys_buffer,MAX_EVENTS_KEYS,(int)key);
+	array_add_once(pressing_keys,MAX_EVENTS_KEYS,(int)key);
 }
 static void register_keyup(unsigned char key,int mouse_x,int mouse_y) {
 	array_remove(pressing_keys,MAX_EVENTS_KEYS,(int)key);
-	array_add(released_keys_buffer,MAX_EVENTS_KEYS,(int)key);
+	array_add_once(released_keys_buffer,MAX_EVENTS_KEYS,(int)key);
 }
 
 
 int input_pressing(int key) {
-	return array_contains(pressed_keys,MAX_EVENTS_KEYS,key);
+	return array_contains(pressing_keys,MAX_EVENTS_KEYS,key);
 }
 int input_pressed(int key) {
-	return array_contains(pressing_keys,MAX_EVENTS_KEYS,key);
+	return array_contains(pressed_keys,MAX_EVENTS_KEYS,key);
 };
 int input_released(int key) {
 	return array_contains(released_keys,MAX_EVENTS_KEYS,key);
@@ -61,7 +68,7 @@ bool window_init() {
 	int glut_argc;char **glut_argv=NULL;
 	glutInit(&glut_argc,glut_argv);
 
-	 if(gladLoadGL()) {
+	if(gladLoadGL()) {
         // you need an OpenGL context before loading glad
         printf("I did load GL with no context!\n");
         return false;
@@ -75,13 +82,13 @@ bool window_init() {
         printf("Error Loading OpenGL With GLAD!\n");
         return false;
     }
+	glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
 	glutKeyboardFunc(register_keydown);
-	//glutSpecialFunc(register_keydown);
 	glutKeyboardUpFunc(register_keyup);
-	//glutSpecialUpFunc(register_keyup);
+	glutSpecialFunc(register_specialdown);
+	glutSpecialUpFunc(register_specialup);
     return true;
 }
- struct rlimit limit;
 
 void window_update() {
 	glutSwapBuffers();
@@ -93,15 +100,39 @@ void window_update() {
 		snprintf(window_title,100," FPS: %d",time_fps());
 		glutSetWindowTitle(window_title);
 	}
+
 	memcpy(pressed_keys,pressed_keys_buffer,MAX_EVENTS_KEYS*sizeof(int));
 	array_clear(pressed_keys_buffer,MAX_EVENTS_KEYS);
 	memcpy(released_keys,released_keys_buffer,MAX_EVENTS_KEYS*sizeof(int));
 	array_clear(released_keys_buffer,MAX_EVENTS_KEYS);
-	if(input_pressing('p')) {
-		  getrlimit (RLIMIT_STACK, &limit);
-		  printf ("\nStack Limit = %ld and %ld max\n", limit.rlim_cur, limit.rlim_max);
+
+	bool found_key=false;
+	for(int c=0;c<MAX_EVENTS_KEYS;c++) {
+		if(pressed_keys[c]==0) break;
+		else {
+			found_key=true;
+			if(pressed_keys[c]<255) {
+				printf("%c ",pressed_keys[c]);
+			} else {
+				printf("%d ",pressed_keys[c]);
+			}
+		}
 	}
-	
+	if(found_key) printf(" foram pressionado(s)\n");
+
+	found_key=false;
+	for(int c=0;c<MAX_EVENTS_KEYS;c++) {
+		if(released_keys[c]==0) break;
+		else {
+			found_key=true;
+			if(released_keys[c]<255) {
+				printf("%c ",released_keys[c]);
+			} else {
+				printf("%d ",released_keys[c]);
+			}
+		}
+	}
+	if(found_key) printf(" solta(s)\n");
 }
 
 void window_destroy() {

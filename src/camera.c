@@ -12,16 +12,14 @@ void camera_init(Camera *camera) {
 	camera->bottom=-50;
 	camera->zNear=0.1;
 	camera->zFar=1000;
-	camera->transform=transform_identity;
-	camera->transform.position.z=-3;
 	camera->projection_matrix=mat4_identity;
 	camera->view_matrix=mat4_identity;
     camera->render_layer=0;
     camera->viewport=rect_empty;
-    camera_update_matrices(camera);
+    camera_update_matrix(camera);
 }
 
-void camera_update_matrices(Camera *camera) {
+void camera_update_matrix(Camera *camera) {
 	if(camera->is_perspective) {
 		camera->projection_matrix=
 			mat4_perspective(camera->fovy,camera->aspect,camera->zNear,camera->zFar);
@@ -29,7 +27,6 @@ void camera_update_matrices(Camera *camera) {
 		camera->projection_matrix=
 			mat4_ortho(camera->left,camera->right,camera->bottom,camera->top,camera->zNear,camera->zFar);
 	}
-	transform_to_view_matrix(camera->transform,&(camera->view_matrix));
 }
 	
 void camera_perspective(Camera *camera,GLfloat fovy,GLfloat aspect,GLfloat zNear,GLfloat zFar) {
@@ -37,7 +34,7 @@ void camera_perspective(Camera *camera,GLfloat fovy,GLfloat aspect,GLfloat zNear
 	camera->aspect=aspect;
 	camera->zNear=zNear;
 	camera->zFar=zFar;
-	camera_update_matrices(camera);
+	camera_update_matrix(camera);
 }
 
 void camera_ortho(
@@ -54,11 +51,12 @@ void camera_ortho(
 	camera->top=top;
 	camera->zNear=zNear;
 	camera->zNear=zNear;
-	camera_update_matrices(camera);
+	camera_update_matrix(camera);
 }
 
 
 Mat4 camera_generate_shader_matrix(Camera *camera,Mat4 model) {
+	Mat4 inverse_view_matrix=camera->view_matrix;
 	return mat4_mult(
 		camera->projection_matrix,
 		mat4_mult(model,camera->view_matrix)

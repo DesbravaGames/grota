@@ -46,9 +46,6 @@ GLfloat vec3_dot(Vec3 a, Vec3 b);
 Vec3 vec3_scalar_mult(Vec3 v,GLfloat s);
 Vec3 vec3_invert(Vec3 v);
 
-
-
-
 /*     MATRICES     */
 
 #define MAT4_EMPTY {0}
@@ -74,6 +71,17 @@ static const Mat4 mat4_identity= {
  * @return Mat4
  */
 Mat4 mat4_create(GLfloat num);
+
+
+/**
+ * @brief multiply matrix m1 by matrix M2
+ * 
+ */
+Mat4 mat4_mult(Mat4 m1, Mat4 m2);
+
+void mat4_rotate_vec3(Mat4 *matrix,Vec3 angles);
+void mat4_translate_vec3(Mat4 *matrix,Vec3 translation);
+void mat4_scale_vec3(Mat4 *matrix,Vec3 scale);
 
 
 /**
@@ -138,45 +146,15 @@ Mat4 mat4_look_at(
         Vec3 up);
 
 
-
-/**
- * @brief multiply matrice by a scalar
- * 
- */
-void mat4_scalar_mult(Mat4 *m, GLfloat s);
-
-
-/**
- * @brief multiply matrix m1 by matrix M2
- * 
- */
-Mat4 mat4_mult(Mat4 m1, Mat4 m2);
-void mat4_rotation(Mat4 *matrix,GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
-void mat4_rotationxyz(Mat4 *matrix,GLfloat angleX, GLfloat angleY, GLfloat angleZ);
-void mat4_rotation_vec3(Mat4 *matrix,Vec3 angles);
-void mat4_rotate(Mat4 *matrix,GLfloat angle, GLfloat x, GLfloat y, GLfloat z);
-void mat4_rotatexyz(Mat4 *matrix,GLfloat angleX, GLfloat angleY, GLfloat angleZ);
-void mat4_rotate_vec3(Mat4 *matrix,Vec3 angles);
-void mat4_translation(Mat4 *matrix,GLfloat x, GLfloat y, GLfloat z);
-void mat4_translation_vec3(Mat4 *matrix,Vec3 translation);
-void mat4_translate(Mat4 *matrix,GLfloat x, GLfloat y, GLfloat z);
-void mat4_translate_vec3(Mat4 *matrix,Vec3 translation);
-void mat4_scaling(Mat4 *matrix,GLfloat x, GLfloat y, GLfloat z);
-void mat4_scaling_vec3(Mat4 *matrix,Vec3 scale);
-void mat4_scale(Mat4 *matrix,GLfloat x, GLfloat y, GLfloat z);
-void mat4_scale_all(Mat4 *matrix,GLfloat v);
-void mat4_scale_vec3(Mat4 *matrix,Vec3 scale);
-
 /*   TRANSFORMATIONS  */
-
 typedef struct {
 	Vec3 position;
 	Vec3 angles;
 	Vec3 size;
 } Transform;
 
-#define TRANSFORM_EMPTY = {VEC3_ZERO, VEC3_ZERO,VEC3_FILL_ONE };
-#define TRANSFORM_ORIGIN = {VEC3_ZERO, VEC3_ZERO,VEC3_FILL_ONE };
+#define TRANSFORM_EMPTY {VEC3_ZERO, VEC3_ZERO,VEC3_FILL_ONE };
+#define TRANSFORM_IDENTITY {VEC3_ZERO, VEC3_ZERO,VEC3_FILL_ONE };
 
 static Transform transform_identity= {
 	{0.0f,0.0f,0.0f}, //pos
@@ -190,7 +168,6 @@ void transform_to_matrix(Transform transform,Mat4 *matrix);
  * then, is the inverse process of model matrix
  *  */
 void transform_to_view_matrix(Transform transform,Mat4 *matrix);
-
 
 
 #endif

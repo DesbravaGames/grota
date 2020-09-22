@@ -14,7 +14,6 @@ typedef struct {
 	GLfloat left,right,top,bottom;
 	// for any type
 	GLfloat zNear,zFar;
-	Transform transform;
 	Mat4 projection_matrix;
 	Mat4 view_matrix;
 	GLint render_layer;
@@ -33,7 +32,7 @@ void camera_ortho(
 			GLfloat zNear,
 			GLfloat zFar);
 			
-void camera_update_matrices(Camera *camera);
+void camera_update_matrix(Camera *camera);
 
 void camera_log(Camera *cam);
 Mat4 camera_generate_shader_matrix(Camera *camera,Mat4 model);

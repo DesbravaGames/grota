@@ -135,6 +135,7 @@ Vec3 vec3_invert(Vec3 v) {
 
 
 
+
 /*             MATRICES               */
 
 Mat4 mat4_create(GLfloat num) {
@@ -153,7 +154,7 @@ Mat4 mat4_perspective(
         GLfloat aspect,
         GLfloat zNear,
         GLfloat zFar) {
-
+            
     GLfloat tanHalfFovy = (GLfloat) tan(fovy / (GLfloat) 2);
 
     Mat4 result = mat4_create(0.0f);
@@ -230,14 +231,6 @@ Mat4 mat4_look_at(
 }
 
 
-void mat4_scalar_mult(Mat4 *m, GLfloat s) {
-    for(int x = 0; x < 4; x++) {
-        for (int y = 0; y < 4; y++) {
-            m->data[y][x] *= s;
-        }
-    }
-}
-
 Mat4 mat4_mult(Mat4 m1, Mat4 m2) {
     Mat4 result = 
     {
@@ -274,14 +267,14 @@ Mat4 mat4_mult(Mat4 m1, Mat4 m2) {
 }
 
 
-const double pi=M_PI;
-const double half_pi=M_PI/2;
-const double double_pi=M_PI*2;
+const float pi=3.1415;
+const float half_pi=3.1415/2;
+const float double_pi=3.1415*2;
 
-static double cos_from_sin(double _sin, double angle) {
-    double cos = sqrt(1.0 - _sin * _sin);
-    double a = angle + half_pi;
-    double b = a - (int)(a / double_pi) * double_pi;
+static GLfloat cos_from_sin(GLfloat _sin, GLfloat angle) {
+    GLfloat cos = sqrt(1.0 - _sin * _sin);
+    GLfloat a = angle + half_pi;
+    GLfloat b = a - (int)(a / double_pi) * double_pi;
     if (b < 0.0) 
         b = double_pi + b;
     if (b >= pi)
@@ -289,32 +282,9 @@ static double cos_from_sin(double _sin, double angle) {
     return cos;
 }
 
-void mat4_rotation(Mat4 *matrix,GLfloat angle, GLfloat x, GLfloat y, GLfloat z) {
-    GLfloat _sin = (GLfloat) sin(angle);
-    GLfloat cos = (GLfloat) cos_from_sin(_sin, angle);
-    GLfloat C = 1.0f - cos;
 
-    GLfloat xy = x * y, xz = x * z, yz = y * z;
 
-    matrix->data[0][0] = cos + x * x * C;
-    matrix->data[0][1] = xy * C - z * _sin;
-    matrix->data[0][2] = xz * C + y * _sin;
-
-    matrix->data[1][0] = xy * C + z * _sin;
-    matrix->data[1][1] = cos + y * y * C;
-    matrix->data[1][2] = yz * C - x * _sin;
-
-    matrix->data[2][0] =xz * C - y * _sin;
-
-    matrix->data[2][1] = yz * C + x * _sin;
-    matrix->data[2][2] = cos + z * z * C;
-
-}
-
-void mat4_rotation_vec3(Mat4 *matrix,Vec3 angles){
-    mat4_rotationxyz(matrix,angles.x,angles.y,angles.z);
-}
-void mat4_rotationxyz(Mat4 *matrix,GLfloat angleX, GLfloat angleY, GLfloat angleZ) {
+void mat4_set_rotation_vec3(Mat4 *matrix,GLfloat angleX, GLfloat angleY, GLfloat angleZ) {
     GLfloat sinX = (GLfloat) sin(angleX);
     GLfloat cosX = (GLfloat) cos_from_sin(sinX, angleX);
     GLfloat sinY = (GLfloat) sin(angleY);
@@ -346,69 +316,22 @@ void mat4_rotationxyz(Mat4 *matrix,GLfloat angleX, GLfloat angleY, GLfloat angle
     matrix->data[2][1] = (nm02 * m_sinZ + nm12 * cosZ);
 }
 
-void mat4_rotate(Mat4 *matrix,GLfloat angle, GLfloat x, GLfloat y, GLfloat z) {
-  Mat4 rotation_matrix=mat4_create(1.0);
-  mat4_rotation(&rotation_matrix,angle,x,y,z);
-  *matrix=mat4_mult(rotation_matrix,*matrix);
-}
-
 void mat4_rotate_vec3(Mat4 *matrix,Vec3 angles){
     Mat4 rotation_matrix=mat4_create(1.0);
-    mat4_rotationxyz(&rotation_matrix,angles.x,angles.y,angles.z);
+    mat4_set_rotation_vec3(&rotation_matrix,angles.x,angles.y,angles.z);
     *matrix=mat4_mult(rotation_matrix,*matrix);
 }
-void mat4_rotatexyz(Mat4 *matrix,GLfloat angleX, GLfloat angleY, GLfloat angleZ) {
-     Mat4 rotation_matrix=mat4_create(1.0);
-    mat4_rotationxyz(&rotation_matrix,angleX,angleY,angleZ);
-    *matrix=mat4_mult(rotation_matrix,*matrix);
-}
-
-
-void mat4_translation(Mat4 *matrix,GLfloat x, GLfloat y, GLfloat z) {
-    matrix->data[3][0]=x;
-    matrix->data[3][1]=y;
-    matrix->data[3][2]=z;
-}
-void mat4_translation_vec3(Mat4 *matrix,Vec3 translation) {
-    matrix->data[3][0]=translation.x;
-    matrix->data[3][1]=translation.y;
-    matrix->data[3][2]=translation.z;
-}    
-
-void mat4_translate(Mat4 *matrix,GLfloat x, GLfloat y, GLfloat z) {
-    matrix->data[3][0]+=x;
-    matrix->data[3][1]+=y;
-    matrix->data[3][2]+=z;
-}
-
 void mat4_translate_vec3(Mat4 *matrix,Vec3 translation) {
     matrix->data[3][0]+=translation.x;
     matrix->data[3][1]+=translation.y;
     matrix->data[3][2]+=translation.z;
 }    
-void mat4_scaling(Mat4 *matrix,GLfloat x, GLfloat y, GLfloat z) {
-    matrix->data[0][0]=x;
-    matrix->data[1][1]=y;
-    matrix->data[2][2]=z;
-}
-void mat4_scaling_vec3(Mat4 *matrix,Vec3 scale) {
-    mat4_scaling(matrix,scale.x,scale.y,scale.z);
-}
-void mat4_scale_all(Mat4 *matrix,GLfloat v) {
-    matrix->data[0][0]*=v;
-    matrix->data[1][1]*=v;
-    matrix->data[2][2]*=v;
-}
-void mat4_scale(Mat4 *matrix,GLfloat x, GLfloat y, GLfloat z) {
-    matrix->data[0][0]*=x;
-    matrix->data[1][1]*=y;
-    matrix->data[2][2]*=z;
-}
 void mat4_scale_vec3(Mat4 *matrix,Vec3 scale) {
     matrix->data[0][0]*=scale.x;
     matrix->data[1][1]*=scale.y;
     matrix->data[2][2]*=scale.z;
 }
+
 void transform_to_matrix(Transform transform,Mat4 *matrix) {
     *matrix=mat4_create(1.0);
     mat4_scale_vec3(matrix,transform.size);
@@ -427,7 +350,6 @@ void transform_to_view_matrix(Transform transform,Mat4 *matrix) {
 
     mat4_translate_vec3(matrix,adjusted_translation);
     mat4_rotate_vec3(matrix,transform.angles);
-
 }
 
 

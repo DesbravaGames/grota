@@ -5,7 +5,7 @@
 
 
 bool array_contains(int* arr,unsigned int arr_size,int value) {
-	if(value=0) return false;
+	if(value==0) return false;
 	for(int c=0;c<arr_size;c++) {
 		if(arr[c]==value) return true;
 	}
@@ -18,10 +18,10 @@ bool array_add_once(int* arr,unsigned int arr_size,int value) {
 	else return false;
 }
 bool array_add(int* arr,unsigned int arr_size,int value) {
-	if(value=0) return false;
+	if(value==0) return false;
 	for(int c=0;c<arr_size;c++) {
-		if(arr[c]==value) {
-			arr[c]=0;
+		if(arr[c]==0) {
+			arr[c]=value;
 			return true;
 		}
 	}
@@ -29,7 +29,7 @@ bool array_add(int* arr,unsigned int arr_size,int value) {
 }
 
 bool array_remove(int* arr,unsigned int arr_size,int value) {
-	if(value=0) return false;
+	if(value==0) return false;
 	for(int c=0;c<arr_size;c++) {
 		if(arr[c]==value) {
 			arr[c]=0;
