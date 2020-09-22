@@ -3,6 +3,8 @@
         "window.h": "c",
         "camera.h": "c",
         "shaders.h": "c",
-        "opengl.h": "c"
-    }
+        "opengl.h": "c",
+        "type_traits": "c"
+    },
+    "cmake.sourceDirectory": "${workspaceFolder}/src"
 }
