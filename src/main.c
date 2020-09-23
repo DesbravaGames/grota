@@ -1,10 +1,13 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stdbool.h>
+#include <stdio.h>
+#include <math.h>
 #include "camera.h"
 #include "window.h"
 #include "shaders.h"
-#include "renderers/quad.c"
+#include "renderers/renderer.h"
+#include "renderers/renderer_utils.c"
 
 #include <GL/glut.h>
 #include "core/time.h"
@@ -14,16 +17,17 @@
 
 
 Camera main_camera={0};
-Quad quad=QUAD_NEW;
+Renderer quad=RENDERER_NEW;
 
 Transform tr_camera=TRANSFORM_IDENTITY;
 	bool engine_init() {
 	if(!window_init()) return false;
-	if(!quad_init()) return false;
+	if(!renderer_init_quad(&quad)) return false;
 	quad.color=color_create(0,1,0,0);
-	if(!quad_texturize(&quad,"/home/tocatoca/Pictures/5.jpg")) {
+	if(!renderer_texturize(&quad,"/home/tocatoca/Pictures/5.jpg")) {
 		 printf("Failed to load texture");
 	}
+
  	time_init();
  	camera_init(&main_camera);
  	return true;
@@ -66,10 +70,11 @@ void engine_update() {
 	quad.color.r=sin(time_elapsed());
 	quad.color.g=1-sin(time_elapsed());
 	quad.color.b=cos(time_elapsed());
-    quad_draw(&quad,&main_camera);
+	
+    renderer_draw(&quad,&main_camera);
 }
 void engine_destroy() {
-	quad_destroy();
+	renderer_destroy(&quad);
 	window_destroy();
 }
 

@@ -4,7 +4,11 @@
         "camera.h": "c",
         "shaders.h": "c",
         "opengl.h": "c",
-        "type_traits": "c"
+        "type_traits": "c",
+        "renderer.h": "c",
+        "stdio.h": "c",
+        "stb_image.h": "c"
     },
-    "cmake.sourceDirectory": "${workspaceFolder}/src"
+    "cmake.sourceDirectory": "${workspaceFolder}/src",
+    "C_Cpp.errorSquiggles": "Disabled"
 }

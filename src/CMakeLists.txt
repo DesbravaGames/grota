@@ -12,6 +12,7 @@ add_executable(grota
 	core/mathematics.c
 	core/colors.c
 	core/time.c
+	renderers/renderer.c
 	libs/glad/glad.c
 )
 
