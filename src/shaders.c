@@ -40,13 +40,6 @@ GLuint shader_link_program(GLuint vertex_shader,GLuint fragment_shader) {
     glAttachShader(shader_program, vertex_shader);
     glAttachShader(shader_program, fragment_shader);
     glUseProgram(shader_program);
-    /* DEPRECATED
-		glBindAttribLocation(shader_program, SHADER_VERTEX_ATTRIBUTE,SHADER_VERTEX_ATTRIBUTE_NAME);
-		glBindAttribLocation(shader_program, SHADER_TEXTCOORD_ATTRIBUTE,SHADER_TEXTCOORD_ATTRIBUTE_NAME); 
-		glBindAttribLocation(shader_program, SHADER_NORMAL_ATTRIBUTE,SHADER_NORMAL_ATTRIBUTE_NAME); 
-		glBindAttribLocation(shader_program, SHADER_VERTEX_COLOR_ATTRIBUTE,SHADER_TEXTCOORD_ATTRIBUTE_NAME);  
-		glBindAttribLocation(shader_program, SHADER_TEXTURE_ATTRIBUTE,SHADER_TEXTURE_ATTRIBUTE_NAME);  
-    */
     glLinkProgram(shader_program);
     // check for linking errors
     glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
