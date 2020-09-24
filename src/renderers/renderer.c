@@ -93,7 +93,7 @@ bool renderer_texturize(Renderer *renderer,const char *filename) {
     renderer->texture_id=load_texture(filename);
     return true;
 }
-bool renderer_init(Renderer *renderer,RendererData renderer_data) {
+bool renderer_init(Renderer *renderer,RendererMesh renderer_data) {
     // configurando shader
     if(!renderer_shader_init()) return false;
 

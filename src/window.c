@@ -1,4 +1,4 @@
-#include "core/event_register.h"
+#include "core/array.h"
 #include "core/mathematics.h"
 #include "core/colors.h"
 #include "core/time.h"
@@ -6,13 +6,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*#ifdef __APPLE_
-		#include <GLUT/glut.h>
+/*
+#ifdef __APPLE_
+	#include <GLUT/glut.h>
 #else
 #endif
 */
-	///// INPUT
-
 
 #define MAX_EVENTS_KEYS 16
 

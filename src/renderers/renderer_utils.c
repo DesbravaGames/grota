@@ -16,7 +16,7 @@ GLuint quad_indices[] = {
 };
 
 bool renderer_init_quad(Renderer *quad) {
-    RendererData rend_data;
+    RendererMesh rend_data;
     rend_data.vertices=quad_vertices;
     rend_data.vertices_count=sizeof(quad_vertices)/sizeof(VertexData);
     rend_data.indices=quad_indices;
@@ -40,7 +40,7 @@ GLuint skybox_indices[] = {
 };
 
 bool renderer_init_skybox(Renderer *quad) {
-    RendererData rend_data;
+    RendererMesh rend_data;
     rend_data.vertices=skybox_vertices;
     rend_data.vertices_count=sizeof(skybox_vertices)/sizeof(VertexData);
     rend_data.indices=skybox_indices;
