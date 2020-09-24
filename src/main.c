@@ -1,13 +1,11 @@
-
-#define STB_IMAGE_IMPLEMENTATION
 #include <stdbool.h>
 #include <stdio.h>
 #include <math.h>
 #include "core/time.h"
-#include "renderer/camera.h"
-#include "renderer/window.h"
-#include "renderer/shaders.h"
-#include "renderer/renderer.h"
+#include "graphics/graphics.h"
+#include "graphics/camera.h"
+#include "graphics/renderer.h"
+#include "graphics/window.h"
 #include <GL/glut.h>
 /*
  * REQUIRE OPENGL 2.1 WITH ARB_VERTEX_ARRAY_OBJECT EXTENSION
@@ -21,22 +19,21 @@ Renderer quad=RENDERER_NEW;
 Transform tr_camera=TRANSFORM_IDENTITY;
 
 bool engine_init() {
-	if(!window_init()) return false;
+	if(!graphics_init()) return false;
 	if(!renderer_init_quad(&quad)) return false;
+ 	camera_init(&main_camera);
 	quad.color=color_create(0,1,0,0);
 	if(!renderer_texturize(&quad,"/home/tocatoca/Pictures/5.jpg")) {
 		 printf("Failed to load texture");
 	}
- 	time_init();
- 	camera_init(&main_camera);
  	return true;
 }
 
 void engine_update() {	
-	window_update();
-	time_update();
-	// update projection
+	graphics_update();
+	camera_draw_viewport(&main_camera);
 	camera_update_matrix(&main_camera);
+	// update projection
 	float velocidade=time_delta()*0.5; //meio metro por segundo
 	Mat4 *cmat=&(main_camera.view_matrix);
  
@@ -56,13 +53,6 @@ void engine_update() {
 	if(input_pressing(358)) tr_camera.angles.x-=velocidade;
 	
 	
-	glViewport(
-		main_camera.viewport.position.x*window_width(),
-		main_camera.viewport.position.y*window_height(),
-		main_camera.viewport.size.x*window_width(),
-		main_camera.viewport.size.y*window_height()
-	);
-	
 	quad.color.r=sin(time_elapsed());
 	quad.color.g=1-sin(time_elapsed());
 	quad.color.b=cos(time_elapsed());
@@ -71,14 +61,15 @@ void engine_update() {
 }
 void engine_destroy() {
 	renderer_destroy(&quad);
-	window_destroy();
+	graphics_destroy();
 }
 
 int main(int argc, char **argv) {
 	if(!engine_init()) return -1;
-	
+
 	glutIdleFunc(engine_update);	
 	glutMainLoop();
+
 
 	engine_destroy(); 
 	return 0;

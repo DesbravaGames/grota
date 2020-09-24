@@ -4,16 +4,17 @@ cmake_minimum_required(VERSION 2.8)
 set(CMAKE_C_STANDARD 99)
 project(Grota3D)
 add_executable(grota 
-	main.c
-	shaders.c
-	camera.c
-	window.c
-	core/event_register.c
+	core/array.c
 	core/mathematics.c
 	core/colors.c
 	core/time.c
-	renderers/renderer.c
+	graphics/renderer.c
+	graphics/shaders.c
+	graphics/camera.c
+	graphics/window.c
+	graphics/graphics.c
 	libs/glad/glad.c
+	main.c
 )
 
 find_package(OpenGL REQUIRED)

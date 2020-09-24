@@ -37,4 +37,5 @@ void camera_update_matrix(Camera *camera);
 void camera_log(Camera *cam);
 Mat4 camera_generate_shader_matrix(Camera *camera,Mat4 model);
 
+void camera_draw_viewport(Camera *cam);
 #endif

@@ -63,6 +63,15 @@ Mat4 camera_generate_shader_matrix(Camera *camera,Mat4 model) {
 	);
 }
 
+void camera_draw_viewport(Camera *camera) {
+	Rect viewport=camera->viewport;
+	glViewport(
+		viewport.position.x*window_width(),
+		viewport.position.y*window_height(),
+		viewport.size.x*window_width(),
+		viewport.size.y*window_height()
+	);
+}
 
 void camera_log(Camera *cam) {
 /*	printf(" 
@@ -85,3 +94,4 @@ void camera_log(Camera *cam) {
 	camera->zFar=1000,
 	)*/
 }
+

@@ -7,7 +7,9 @@
         "type_traits": "c",
         "renderer.h": "c",
         "stdio.h": "c",
-        "stb_image.h": "c"
+        "stb_image.h": "c",
+        "array.h": "c",
+        "graphics.h": "c"
     },
     "cmake.sourceDirectory": "${workspaceFolder}/src",
     "C_Cpp.errorSquiggles": "Disabled"

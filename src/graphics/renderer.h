@@ -8,7 +8,6 @@
 #define RENDERER_NEW {COLOR_WHITE,MAT4_IDENTITY,0,0,0,0}
 
 
-
 typedef struct {
     Vec3 vertex;
     Vec2 texture_coordinates;
